@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bibodary Editor</title>
+		<link type="text/css" rel="stylesheet" href="../styles/editor.css" />
+		<link type="text/css" rel="stylesheet" href="../../node_modules/material-design-icons/iconfont/material-icons.css" />
+		<script src="../../node_modules/vue/dist/vue.js"></script>
+		<script src="../scripts/menukit.js"></script>
+		<script src="../scripts/editor.js"></script>
+	</head>
+	<body>
+		<div class="menu" id="menu">
+			<span class="button" id="menu--save">Save</span>
+			<span class="button" id="menu--load">Load</span>
+			<span class="spacer"></span>
+			<span class="select" id="menu--mode">
+				<span value="jepodary" selected>Jepodary</span>
+				<span value="doublejepodary">Double Jepodary</span>
+				<span value="finaljepodary">Final Jepodary</span>
+			</span>
+			<span class="spacer"></span>
+		</div>
+		<div id="editor">
+			<div class="jepodary" id="editor--jepodary">
+				<div v-for="category in jepodary.categories" v-bind:index="jepodary.categories.indexOf(category)">
+					<div class="category">{{ category.name }}</div>
+					<div class="question" v-for="question in category.questions">{{question}}</div>
+				</div>
+			</div>
+			<div class="jepodary hidden" id="editor--double-jepodary">
+				<div v-for="category in doublejepodary.categories" v-bind:index="doublejepodary.categories.indexOf(category)">
+					<div class="category">{{ category.name }}</div>
+					<div class="question" v-for="question in category.questions"></div>
+				</div>
+			</div>
+			<div class="final hidden" id="editor--final-jepodary">
+				<div class="question">{{ finaljepodary.question }}</div>
+			</div>
+		</div>
+		<div class="menu" id="settings">
+			<span class="label">Price start:</span>
+			<span class="number" id="settings--start-price">200</span>
+			<span class="label">Price increase:</span>
+			<span class="number" id="settings--start-inc">200</span>
+		</div>
+		<div v-bind:class="visible ? 'shown' : 'hidden'" class="popup" id="prompt">
+			<div>
+				<h2>{{ message }}</h2>
+				<input v-model.trim="value" type="text"></input>
+				<div>
+					<button v-on:click="submit">Okay</button>
+					<button v-on:click="cancel">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

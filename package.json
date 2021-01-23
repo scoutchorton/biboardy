@@ -1,0 +1,23 @@
+{
+  "name": "bibodary",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/electron .",
+    "edit": "./node_modules/.bin/electron . edit",
+    "edit-debug": "./node_modules/.bin/electron . edit -d",
+    "debug": "./node_modules/.bin/electron . -d",
+    "sass": "./node_modules/.bin/sass --update --style compressed ./static/sass:./static/styles",
+    "sass-watch": "./node_modules/.bin/sass --watch --poll --style compressed ./static/sass:./static/styles"
+  },
+  "author": "scoutchorton",
+  "license": "",
+  "devDependencies": {},
+  "dependencies": {
+    "electron": "^11.2.0",
+    "material-design-icons": "^3.0.1",
+    "sass": "^1.32.4",
+    "vue": "^2.6.12"
+  }
+}
