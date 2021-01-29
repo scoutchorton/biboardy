@@ -2,7 +2,7 @@
  * Imports
  */
 const { app, BrowserWindow, dialog, ipcMain, Menu } = require("electron");
-const fs = require('fs');
+const fs = require('fs').promises;
 
 /**
  * Electron loading
@@ -67,37 +67,38 @@ app.on('activate', () => {
 });
 
 //Process messages from render process
-ipcMain.on('file', (e, data) => {
-	//Data represending the file
-	let fileData;
-
-	console.log(data);
-
+ipcMain.handle('file', async (e, data) => {
 	//Open file save dialog
 	if(data.action === 'save') {
-		let fileDataPath = dialog.showSaveDialogSync(win, {
+		let fileDataPath = await dialog.showSaveDialog(win, {
 			title: 'Save game data',
 			filters: [
 				{name: 'Game Data', extensions: ['json']}
 			]
 		});
-		fs.writeFileSync(fileDataPath, JSON.stringify(data.data));
+		console.log(`Save: ${JSON.stringify(data.data)}\nSave path: ${fileDataPath.filePath}`);
+		if(fileDataPath.filePath !== undefined)
+			return await fs.writeFile(fileDataPath.filePath, JSON.stringify(data.data));
+		else
+			return undefined
 	//Open file open dialog
 	} else if(data.action === 'load') {
-		let fileDataPath = dialog.showOpenDialogSync(win, {
+		let fileDataPath = await dialog.showOpenDialog(win, {
 			title: 'Open game data',
 			filters: [
 				{name: 'Game Data', extensions: ['json']}
 			]
 		});
-		fileData = fs.readFileSync(fileDataPath);
-		ipcMain.sendSync('file', {
-			action: 'load',
-			data: JSON.parse(fileData)
-		});
+		console.log(fileDataPath.filePaths, fileDataPath.filePaths[0], typeof(fileDataPath.filePaths[0]));
+		if(fileDataPath.filePaths[0] !== undefined)
+			return JSON.parse(await fs.readFile(fileDataPath.filePaths[0]));
+		else
+			return undefined
 	//Show message when action is not known
 	} else
 		console.warn(`File action ${data.action} unknown. No action taken.`);
+	
+	return undefined;
 });
 
 /*

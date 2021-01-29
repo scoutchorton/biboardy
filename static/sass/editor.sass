@@ -122,7 +122,6 @@ html, body
 		flex-direction: row
 		align-items: center
 		justify-content: center
-		background: red
 
 		/* Category column */
 		div
@@ -136,18 +135,38 @@ html, body
 				display: flex
 				align-items: center
 				justify-content: center
+				flex-direction: column
 				background: blue
 				margin: 2px
-				border-bottom: 0px solid black
-				border-right: 0px solid black
 				width: calc(100% - 4px)
 				color: white
-				min-height: 10vh
+				height: 10vh
+				text-align: center
+				overflow-y: hidden
+
 			/* Category heading */
 			div:first-child
 				background: grey
 				margin-bottom: 5px
 	
+	/* Final Jepodary question */
+	& > div.final
+		background: black
+
+		& > div
+			display: flex
+			align-items: center
+			justify-content: center
+			background: blue
+			margin: 2px
+			border-bottom: 0px solid black
+			border-right: 0px solid black
+			width: calc(100% - 4px)
+			color: white
+			min-height: 10vh
+			font-size: 1.5em
+
+
 	/* Hidden round */
 	& > div.hidden
 		display: none
@@ -162,13 +181,57 @@ html, body
 	align-items: center
 	justify-content: center
 
+	/* Hide contents of popup */
 	&.hidden
 		display: none
 
-	div
+	/* Content */
+	& > div
 		background: white
 		max-width: 50%
 		max-height: 50%
 		min-width: 1em
 		min-height: 1em
+		padding: 0.5em
+		box-shadow: 0 2.5px 5px 2.5px #3f3f3f
+
+		/* Header */
+		& > h3
+			margin: 0.2em 0
+		
+		/* Value input */
+		& > textarea
+			background: lightgrey
+			border: none
+			border-radius: 1em
+			margin: 0.25em
+			outline: none
+			padding: 0 0.5em
+			transition: background 0.5s
+
+			&:hover
+				background: grey
+				transition: background 0.5s
+		
+		/* Button section */
+		& > div
+			display: flex
+			justify-content: flex-end
+			flex-direction: row
+
+			& > button
+				background: lightgrey
+				border-radius: 1em
+				border: none
+				outline: none
+				margin: 0.25em
+				transition: background 0.5s
+
+				&:hover
+					background: grey
+					transition: background 0.5s
+
+				&:active
+					background: #303030
+					transition: background 0.25s
 	

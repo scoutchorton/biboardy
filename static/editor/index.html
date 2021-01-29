@@ -24,17 +24,17 @@
 			<div class="jepodary" id="editor--jepodary">
 				<div v-for="category in jepodary.categories" v-bind:index="jepodary.categories.indexOf(category)">
 					<div class="category">{{ category.name }}</div>
-					<div class="question" v-for="question in category.questions">{{question}}</div>
+					<div class="question" v-for="question in category.questions">{{ question }}</div>
 				</div>
 			</div>
 			<div class="jepodary hidden" id="editor--double-jepodary">
 				<div v-for="category in doublejepodary.categories" v-bind:index="doublejepodary.categories.indexOf(category)">
 					<div class="category">{{ category.name }}</div>
-					<div class="question" v-for="question in category.questions"></div>
+					<div class="question" v-for="question in category.questions">{{ question }}</div>
 				</div>
 			</div>
 			<div class="final hidden" id="editor--final-jepodary">
-				<div class="question">{{ finaljepodary.question }}</div>
+				<div class="final question">{{ finaljepodary.question }}</div>
 			</div>
 		</div>
 		<div class="menu" id="settings">
@@ -45,8 +45,8 @@
 		</div>
 		<div v-bind:class="visible ? 'shown' : 'hidden'" class="popup" id="prompt">
 			<div>
-				<h2>{{ message }}</h2>
-				<input v-model.trim="value" type="text"></input>
+				<h3>{{ message }}</h3>
+				<textarea v-model.trim="value" rows="4" v-on:keyup.enter="submit" v-on:keyup.escape="cancel"></textarea>
 				<div>
 					<button v-on:click="submit">Okay</button>
 					<button v-on:click="cancel">Cancel</button>
