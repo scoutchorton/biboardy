@@ -1,17 +1,13 @@
 const { ipcRenderer } = require('electron');
 
-var editor;
-var prompt
-var temp;
-
 window.addEventListener('load', () => {	
 	//Load editor Vue instance
-	//let editor = new Vue({
-	editor = new Vue({
+	//editor = new Vue({
+	let editor = new Vue({
 		el: '#editor',
 		data: () => {
 			return {
-				'jepodary': {
+				'jeopardy': {
 					categories: [
 						{
 							name: "Category 1",
@@ -52,13 +48,13 @@ window.addEventListener('load', () => {
 					]
 				},
 				'finaljepodary': {
-					question: 'Final Jepodary Question'
+					question: 'Final Jeopardy Question'
 				},
 			};
 		}
 	});
-	//let prompt = new Vue({
-	prompt = new Vue({
+	//prompt = new Vue({
+	let prompt = new Vue({
 		el: '#prompt',
 		data: () => {
 			return {
@@ -82,7 +78,6 @@ window.addEventListener('load', () => {
 
 	//Change visible board
 	document.getElementById('menu--mode').addEventListener('change', (e) => {
-		//console.log(e.target.getAttribute('value'));
 		let mode = e.target.getAttribute('value');
 
 		//Hide all boards
@@ -91,22 +86,13 @@ window.addEventListener('load', () => {
 		}
 
 		//Show correct board
-		if(mode === 'jepodary')
-			document.getElementById('editor--jepodary').classList.remove('hidden');
+		if(mode === 'jeopardy')
+			document.getElementById('editor--jeopardy').classList.remove('hidden');
 		else if(mode === 'doublejepodary')
-			document.getElementById('editor--double-jepodary').classList.remove('hidden');
+			document.getElementById('editor--double-jeopardy').classList.remove('hidden');
 		else if(mode === 'finaljepodary')
-			document.getElementById('editor--final-jepodary').classList.remove('hidden');
+			document.getElementById('editor--final-jeopardy').classList.remove('hidden');
 	});
-
-	//Change number board
-	/*
-	for(let num of document.querySelectorAll('.menu .number')) {
-		num.addEventListener('change', (e) => {
-			console.log('Number change:', e.target.getAttribute('value'));
-		});
-	}
-	*/
 
 	//Category editing dialog
 	let categories = document.querySelectorAll('.category');
@@ -147,7 +133,7 @@ window.addEventListener('load', () => {
 
 			//Update prompt data based on mode
 			if(e.target.classList.contains('final'))
-				prompt.message = `Final Jepodary Question`;
+				prompt.message = `Final jeopardy Question`;
 			else
 				prompt.message = `Question #${questionIndex + 1}`;
 			prompt.value = e.target.innerText;
@@ -156,7 +142,7 @@ window.addEventListener('load', () => {
 			//Listen for prompt being closed and save data on submit
 			prompt.$once('close', (data) => {
 				if(!data.canceled) {
-					//Update based on final Jepodary or not
+					//Update based on final jeopardy or not
 					if(categoryIndex === -2 && questionIndex === -2)
 						editor.$set(editor.$data[mode], 'question', prompt.value);
 					else
@@ -168,22 +154,13 @@ window.addEventListener('load', () => {
 
 	//Send data to main program to save file data
 	document.getElementById('menu--save').addEventListener('click', () => {
-		console.log({
-			priceStart: document.getElementById('settings--start-price').value,
-			priceInc: document.getElementById('settings--start-price').value,
-			boards: {
-				jepodary: editor.$data.jepodary,
-				doublejepodary: editor.$data.doublejepodary,
-				finaljepodary: editor.$data.finaljepodary
-			}
-		});
 		ipcRenderer.invoke('file', {
 			action: 'save',
 			data: {
 				priceStart: document.getElementById('settings--start-price').querySelector('input[type=number]').value,
 				priceInc: document.getElementById('settings--start-price').querySelector('input[type=number]').value,
 				boards: {
-					jepodary: editor.$data.jepodary,
+					jeopardy: editor.$data.jeopardy,
 					doublejepodary: editor.$data.doublejepodary,
 					finaljepodary: editor.$data.finaljepodary
 				}
@@ -202,7 +179,7 @@ window.addEventListener('load', () => {
 				document.getElementById('settings--start-inc').querySelector('input[type=number]').value = data.priceInc;
 
 				//Load board data
-				editor.$data.jepodary = data.boards.jepodary;
+				editor.$data.jeopardy = data.boards.jeopardy;
 				editor.$data.doublejepodary = data.boards.doublejepodary;
 				editor.$data.finaljepodary = data.boards.finaljepodary;
 			}

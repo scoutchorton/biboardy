@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Bibodary Editor</title>
+		<title>Biboardy Editor</title>
 		<link type="text/css" rel="stylesheet" href="../styles/editor.css" />
 		<link type="text/css" rel="stylesheet" href="../../node_modules/material-design-icons/iconfont/material-icons.css" />
 		<script src="../../node_modules/vue/dist/vue.js"></script>
@@ -14,26 +14,26 @@
 			<span class="button" id="menu--load">Load</span>
 			<span class="spacer"></span>
 			<span class="select" id="menu--mode">
-				<span value="jepodary" selected>Jepodary</span>
-				<span value="doublejepodary">Double Jepodary</span>
-				<span value="finaljepodary">Final Jepodary</span>
+				<span value="jeopardy" selected>Jeopardy</span>
+				<span value="doublejepodary">Double Jeopardy</span>
+				<span value="finaljepodary">Final Jeopardy</span>
 			</span>
 			<span class="spacer"></span>
 		</div>
 		<div id="editor">
-			<div class="jepodary" id="editor--jepodary">
-				<div v-for="category in jepodary.categories" v-bind:index="jepodary.categories.indexOf(category)">
+			<div class="jeopardy" id="editor--jeopardy">
+				<div v-for="category in jeopardy.categories" v-bind:index="jeopardy.categories.indexOf(category)">
 					<div class="category">{{ category.name }}</div>
 					<div class="question" v-for="question in category.questions">{{ question }}</div>
 				</div>
 			</div>
-			<div class="jepodary hidden" id="editor--double-jepodary">
+			<div class="jeopardy hidden" id="editor--double-jeopardy">
 				<div v-for="category in doublejepodary.categories" v-bind:index="doublejepodary.categories.indexOf(category)">
 					<div class="category">{{ category.name }}</div>
 					<div class="question" v-for="question in category.questions">{{ question }}</div>
 				</div>
 			</div>
-			<div class="final hidden" id="editor--final-jepodary">
+			<div class="final hidden" id="editor--final-jeopardy">
 				<div class="final question">{{ finaljepodary.question }}</div>
 			</div>
 		</div>

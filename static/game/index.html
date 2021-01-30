@@ -1,8 +1,52 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Bibodary</title>
+		<title>Biboardy</title>
+		<link type="text/css" rel="stylesheet" href="../styles/game.css" />
+		<link type="text/css" rel="stylesheet" href="../../node_modules/material-design-icons/iconfont/material-icons.css" />
+		<script src="../../node_modules/vue/dist/vue.js"></script>
+		<script src="../scripts/game.js"></script>
 	</head>
 	<body>
+		<!--http://televisiontunes.com/Jeopardy_-_2008-2015.html-->
+		<audio id="audio--theme" src="http://televisiontunes.com/uploads/audio/Jeopardy%20-%202008-2015.mp3"></audio>
+		<!--http://televisiontunes.com/Jeopardy_-_2008_-_Think_Music.html-->
+		<audio id="audio--think" src="http://televisiontunes.com/uploads/audio/Jeopardy%20-%202008%20-%20Think%20Music.mp3"></audio>
+		<!--Jeopardy Board fill 2016: https://www.myinstants.com/search/?name=Jeopardy-->
+		<audio id="audio--board" src="https://www.myinstants.com/media/sounds/jeopardy-board-fill-sound-2016-present-cleaner-version.mp3"></audio>
+		<div id="game">
+			<div class="pane" v-bind:class="gamestate === 'login' ? '' : 'hidden'" id="login">
+				<div>
+					<h2>Players</h2>
+					<div>
+						<input type="text" v-for="player in players" v-model.trim="player.name"/>
+						<!--<span>{{ player.name }}</span>-->
+					</div>
+					<input type="text" placeholder="New Player" v-on:keyup.enter="addPlayer" ref="playerEntry"/>
+					<button ref="gameStart" v-on:click="gameProgress('start')">
+						<span class="material-icons">forward</span>
+					</button>
+				</div>
+			</div>
+			<div class="pane" v-bind:class="gamestate === 'jeopardy' || gamestate === 'double' ? '' : 'hidden'" id="board">
+				<div>{{ playerupname }}'s Turn!</div>
+				<div v-if="gamestate === 'jeopardy'">
+					<div v-for="category in data.boards.jeopardy.categories">
+						<!--Header-->
+						<span>{{ category.name }}</span>
+						<!--Questions-->
+						<span v-for="index in [0, 1, 2, 3, 4]">{{ (category.questions[index]) ? '$' + ((index * Number(data.priceInc)) + Number(data.priceStart)).toString() : '' }}</span>
+					</div>
+				</div>
+				<div v-if="gamestate === 'double'">
+					<div v-for="category in data.boards.doublejeopardy.categories">
+						<!--Header-->
+						<span>{{ category.name }}</span>
+						<!--Questions-->
+						<span v-for="index in [0, 1, 2, 3, 4]">{{ (category.questions[index]) ? '$' + ((index * Number(data.priceInc)) + Number(data.priceStart)).toString() : '' }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

@@ -36,20 +36,6 @@ function createMain() {
 	Menu.setApplicationMenu(null);
 }
 
-/*
-//Create prompt
-async function prompt(name, message) {
-	let promptWin = new BrowserWindow({
-		parent: win,
-		modal: true,
-
-	});
-	//promptWin.loadFile(`static/dialog/prompt.html?name=${encodeURI(name)}&message=${encodeURI(message)}`);
-	promptWin.loadFile(`static/dialog/prompt.html`);
-	promptWin.webContents.openDevTools();
-}
-*/
-
 //Start window
 app.whenReady().then(createMain).catch(err => {
 	app.quit();
@@ -98,9 +84,3 @@ ipcMain.handle('file', async (e, data) => {
 	
 	return undefined;
 });
-
-/*
-ipcMain.handle('prompt', async (e, data) => {
-	return await prompt(data.name, data.message);
-});
-*/

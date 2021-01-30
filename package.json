@@ -1,5 +1,5 @@
 {
-  "name": "bibodary",
+  "name": "biboardy",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,13 +9,17 @@
     "edit-debug": "./node_modules/.bin/electron . edit -d",
     "debug": "./node_modules/.bin/electron . -d",
     "sass": "./node_modules/.bin/sass --update --style compressed ./static/sass:./static/styles",
-    "sass-watch": "./node_modules/.bin/sass --watch --poll --style compressed ./static/sass:./static/styles"
+    "sass-watch": "./node_modules/.bin/sass --watch --poll --style compressed ./static/sass:./static/styles",
+    "build": "./node_modules/.bin/electron-packager .",
+    "build-all": "./node_modules/.bin/electron-packager . --all"
   },
   "author": "scoutchorton",
   "license": "",
-  "devDependencies": {},
-  "dependencies": {
+  "devDependencies": {
     "electron": "^11.2.0",
+    "electron-packager": "^15.2.0"
+  },
+  "dependencies": {
     "material-design-icons": "^3.0.1",
     "sass": "^1.32.4",
     "vue": "^2.6.12"
