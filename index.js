@@ -76,7 +76,6 @@ ipcMain.handle('file', async (e, data) => {
 				{name: 'Game Data', extensions: ['json']}
 			]
 		});
-		console.log(`Save: ${JSON.stringify(data.data)}\nSave path: ${fileDataPath.filePath}`);
 		if(fileDataPath.filePath !== undefined)
 			return await fs.writeFile(fileDataPath.filePath, JSON.stringify(data.data));
 		else
@@ -89,7 +88,6 @@ ipcMain.handle('file', async (e, data) => {
 				{name: 'Game Data', extensions: ['json']}
 			]
 		});
-		console.log(fileDataPath.filePaths, fileDataPath.filePaths[0], typeof(fileDataPath.filePaths[0]));
 		if(fileDataPath.filePaths[0] !== undefined)
 			return JSON.parse(await fs.readFile(fileDataPath.filePaths[0]));
 		else

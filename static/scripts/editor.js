@@ -168,11 +168,20 @@ window.addEventListener('load', () => {
 
 	//Send data to main program to save file data
 	document.getElementById('menu--save').addEventListener('click', () => {
+		console.log({
+			priceStart: document.getElementById('settings--start-price').value,
+			priceInc: document.getElementById('settings--start-price').value,
+			boards: {
+				jepodary: editor.$data.jepodary,
+				doublejepodary: editor.$data.doublejepodary,
+				finaljepodary: editor.$data.finaljepodary
+			}
+		});
 		ipcRenderer.invoke('file', {
 			action: 'save',
 			data: {
-				priceStart: document.getElementById('settings--start-price').value,
-				priceInc: document.getElementById('settings--start-price').value,
+				priceStart: document.getElementById('settings--start-price').querySelector('input[type=number]').value,
+				priceInc: document.getElementById('settings--start-price').querySelector('input[type=number]').value,
 				boards: {
 					jepodary: editor.$data.jepodary,
 					doublejepodary: editor.$data.doublejepodary,
@@ -198,23 +207,6 @@ window.addEventListener('load', () => {
 				editor.$data.finaljepodary = data.boards.finaljepodary;
 			}
 		});
-		//Process data sent back from main process
-		/*
-		ipcRenderer.once('file', (e, data) => {
-			//Only allow load data
-			if(data.action !== 'load')
-				console.warn(`Expected load action, instead got ${data.action}.`);
-			
-			//Load price data
-			document.getElementById('settings--start-price').querySelector('input[type=number]').value = data.priceStart;
-			document.getElementById('settings--start-inc').querySelector('input[type=number]').value = data.priceInc;
-
-			//Load board data
-			editor.$data.jepodary = data.boards.jepodary;
-			editor.$data.doublejepodary = data.boards.doublejepodary;
-			editor.$data.finaljepodary = data.boards.finaljepodary;
-		});
-		*/
 	});
 });
 
