@@ -8,13 +8,13 @@
 		<script src="../scripts/game.js"></script>
 	</head>
 	<body>
-		<!--http://televisiontunes.com/Jeopardy_-_2008-2015.html-->
 		<audio id="audio--theme" src="http://televisiontunes.com/uploads/audio/Jeopardy%20-%202008-2015.mp3"></audio>
-		<!--http://televisiontunes.com/Jeopardy_-_2008_-_Think_Music.html-->
 		<audio id="audio--think" src="http://televisiontunes.com/uploads/audio/Jeopardy%20-%202008%20-%20Think%20Music.mp3"></audio>
-		<!--Jeopardy Board fill 2016: https://www.myinstants.com/search/?name=Jeopardy-->
 		<audio id="audio--board" src="https://www.myinstants.com/media/sounds/jeopardy-board-fill-sound-2016-present-cleaner-version.mp3"></audio>
+		<audio id="audio--time-up" src="https://www.myinstants.com/media/sounds/times-up_AN8OlqZ.mp3"></audio>
+		<audio id="audio--correct" src="https://www.myinstants.com/media/sounds/pos-jeapordyrightanswer.mp3"></audio>
 		<div id="game">
+			<!-- ### Login screen ### -->
 			<div class="pane" v-bind:class="gamestate === 'login' ? '' : 'hidden'" id="login">
 				<div>
 					<h2>Players</h2>
@@ -28,24 +28,52 @@
 					</button>
 				</div>
 			</div>
+			<!-- ### Jeopardy board ### -->
 			<div class="pane" v-bind:class="gamestate === 'jeopardy' || gamestate === 'double' ? '' : 'hidden'" id="board">
-				<div>{{ playerupname }}'s Turn!</div>
-				<div v-if="gamestate === 'jeopardy'">
+				<div v-if="gamestate !== 'final'">{{ playerupname }}'s Turn!</div>
+				<div v-if="gamestate === 'jeopardy' || gamestate === 'transitionDouble'">
 					<div v-for="category in data.boards.jeopardy.categories">
 						<!--Header-->
-						<span>{{ category.name }}</span>
+						<span class="title">{{ category.name }}</span>
 						<!--Questions-->
-						<span v-for="index in [0, 1, 2, 3, 4]">{{ (category.questions[index]) ? '$' + ((index * Number(data.priceInc)) + Number(data.priceStart)).toString() : '' }}</span>
+						<span class="price" v-for="index in [0, 1, 2, 3, 4]" v-on="category.questions[index] && clickPermit ? {click: () => {openQuestion(category, index, ((index * Number(data.priceInc)) + (Number(data.priceStart))))}} : {}">{{ (category.questions[index]) ? '$' + ((index * Number(data.priceInc)) + Number(data.priceStart)).toString() : '' }}</span>
 					</div>
 				</div>
 				<div v-if="gamestate === 'double'">
 					<div v-for="category in data.boards.doublejeopardy.categories">
 						<!--Header-->
-						<span>{{ category.name }}</span>
+						<span class="title">{{ category.name }}</span>
 						<!--Questions-->
-						<span v-for="index in [0, 1, 2, 3, 4]">{{ (category.questions[index]) ? '$' + ((index * Number(data.priceInc)) + Number(data.priceStart)).toString() : '' }}</span>
+						<span class="price" v-for="index in [0, 1, 2, 3, 4]" v-on="category.questions[index] && clickPermit ? {click: () => {openQuestion(category, index, (((index * Number(data.priceInc)) + Number(data.priceStart)) * 2))}} : {}">{{ (category.questions[index]) ? '$' + (((index * Number(data.priceInc)) + Number(data.priceStart)) * 2).toString() : '' }}</span>
 					</div>
 				</div>
+			</div>
+			<!-- ### Jeopardy question (not final) ### -->
+			<div v-if="gamestate !== 'final'" class="pane hidden" id="questionDisplay">
+				<!--Question-->
+				<span class="title">{{ currentQuestion.data }}</span>
+				<!--Skip-->
+				<span v-on:click="gameProgress('transition')" class="material-icons good">arrow_forward</span>
+				<!--Players-->
+				<div>
+					<div v-for="player in players">
+						<span class="title">
+							<span v-if="currentQuestion.disabled.indexOf(player) == -1" class="material-icons bad" v-on:click="answerQuestion(player, false)">close</span>
+							{{ player.name }}
+							<span v-if="currentQuestion.disabled.indexOf(player) == -1" class="material-icons good" v-on:click="answerQuestion(player, true)">check</span>
+						</span>
+						<span class="price" v-bind:class="(player.score < 0) ? 'bad' : ''">{{ (player.score < 0) ? '-' : '' }}${{ Math.abs(player.score).toLocaleString('en-US') }}</span>
+					</div>
+				</div>
+			</div>
+			<!-- ### Transition ### -->
+			<!--<div class="pane hidden" id="transition">-->
+			<div class="pane" v-bind:class="gamestate === 'transitionDouble' || gamestate === 'transitionFinal' ? '' : 'hidden'" id="transition">
+				<div v-for="player in JSON.parse(JSON.stringify(players)).sort((a, b) => {return (a.score < b.score) ? 1 : -1})">
+					<span class="title">{{ player.name }}</span>
+					<span class="price" v-bind:class="(player.score < 0) ? 'bad' : ''">{{ (player.score < 0) ? '-' : '' }}${{ Math.abs(player.score).toLocaleString('en-US') }}</span>
+				</div>
+				<span v-on:click="gameProgress('transition')" class="material-icons good">arrow_forward</span>
 			</div>
 		</div>
 	</body>
