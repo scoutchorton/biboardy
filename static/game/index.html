@@ -53,7 +53,7 @@
 				<!--Question-->
 				<span class="title">{{ currentQuestion.data }}</span>
 				<!--Skip-->
-				<span v-on:click="gameProgress('transition')" class="material-icons good">arrow_forward</span>
+				<span v-on:click="closeQuestion()" class="material-icons good">arrow_forward</span>
 				<!--Players-->
 				<div>
 					<div v-for="player in players">

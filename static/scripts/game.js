@@ -3,12 +3,13 @@ const { ipcRenderer } = require('electron');
 var app;
 var playerCap = 3;
 /* ### REMOVE ### */
-var autoLoadData = true;
+var autoLoadData = false;
+var autoPlayTheme = true;
 
 /* ### REMOVE ### */
-var demoPlayers = ['1', '2', '3'];
+//var demoPlayers = ['1', '2', '3'];
 /* ### REMOVE ### */
-//var demoPlayers = [];
+var demoPlayers = [];
 
 function fadeOut(element, length) {
 	//Only accept audio elements
@@ -70,7 +71,7 @@ window.addEventListener('load', () => {
 
 						/* ### REMOVE ### */
 						setTimeout(() => {
-							app.finishJeopardy();
+							//app.finishJeopardy();
 						}, 2000);
 					}, 1000);
 				//Show score summary, sort of like an ad break
