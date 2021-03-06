@@ -3,12 +3,14 @@ const { ipcRenderer } = require('electron');
 var app;
 var playerCap = 3;
 /* ### REMOVE ### */
-var autoLoadData = true;
+//var autoLoadData = true;
+//var autoLoadData = false;
 
 /* ### REMOVE ### */
-var demoPlayers = ['1', '2', '3'];
+//var demoPlayers = ['1', '2', '3'];
 /* ### REMOVE ### */
 //var demoPlayers = [];
+//var demoPlayers = undefined;
 
 function fadeOut(element, length) {
 	//Only accept audio elements
@@ -36,13 +38,14 @@ window.addEventListener('load', () => {
 		data: () => {
 			return {
 				players: [],
-				data: {"priceStart":"200","priceInc":"200","boards":{"jeopardy":{"categories":[{"name":"Category 1","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 2","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 3","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 4","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 5","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]}]},"doublejepodary":{"categories":[{"name":"Category 1","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 2","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 3","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 4","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 5","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]}]},"finaljepodary":{"question":"Final Jeopardy Question"}}},
+				data: {"priceStart":"200","priceInc":"200","boards":{"jeopardy":{"categories":[{"name":"Category 1","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 2","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 3","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 4","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 5","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]}]},"doublejeopdary":{"categories":[{"name":"Category 1","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 2","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 3","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 4","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]},{"name":"Category 5","questions":["Question 1","Question 2","Question 3","Question 4","Question 5"]}]},"finaljeopdary":{"question":"Final Jeopardy Question"}}},
 				gamestate: 'login',
 				playerupname: '',
 				currentQuestion: {
 					data: 'PLACEHOLDER',
 					score: 0,
-					disabled: []
+					disabled: [],
+					final: false
 				},
 				clickPermit: true
 			}
@@ -54,7 +57,8 @@ window.addEventListener('load', () => {
 					//Add player to dataset and clear textbox
 					app.$set(app.$data.players, app.$data.players.length, {
 						name: app.$refs.playerEntry.value,
-						score: 0
+						score: 0,
+						wager: 0
 					});
 					app.$refs.playerEntry.value = '';
 				}
@@ -64,14 +68,18 @@ window.addEventListener('load', () => {
 				if(mode === 'start' && app.$data.players.length > 1) {
 					app.$set(app.$data, 'playerupname', app.$data.players[Math.floor(Math.random() * app.$data.players.length)].name);
 					app.$set(app.$data, 'gamestate', 'jeopardy');
+					/* ### REMOVE ### */
+					//app.$set(app.$data, 'gamestate', 'double');
 					fadeOut(document.getElementById('audio--theme'), 1);
 					setTimeout(() => {
 						document.getElementById('audio--board').play();
 
 						/* ### REMOVE ### */
+						/*
 						setTimeout(() => {
 							app.finishJeopardy();
 						}, 2000);
+						*/
 					}, 1000);
 				//Show score summary, sort of like an ad break
 				} else if(mode === "transition") {
@@ -87,17 +95,19 @@ window.addEventListener('load', () => {
 					//Transition to Final Jeopardy
 					} else if(app.$data.gamestate === 'transitionFinal') {
 						app.$set(app.$data, 'gamestate', 'final');
-					//Transition to end
+					//Transition to end and cue music
 					} else if(app.$data.gamestate === 'final') {
 						app.$set(app.$data, 'gamestate', 'transitionEnd');
+						document.getElementById('audio--think').pause();
+						document.getElementById('audio--theme').play();
 					}
 				}
 			},
-			'openQuestion': (category, index, score) => {
-				let question = category.questions[index];
+			'openQuestion': (category, index, score, final) => {
+				let question = (category === false) ? app.$data.data.boards.finaljeopardy.question : category.questions[index];
 
-				//Transition not happening, go ahead
-				if(app.$data.clickPermit) {
+				//Transition not happening, go ahead (not Final Jeopardy)
+				if(app.$data.clickPermit && !final) {
 					//Don't allow double clicking questions
 					app.$set(app.$data, 'clickPermit', false);
 
@@ -105,6 +115,7 @@ window.addEventListener('load', () => {
 					app.$set(app.$data.currentQuestion, 'data', question);
 					app.$set(app.$data.currentQuestion, 'score', score);
 					app.$set(app.$data.currentQuestion, 'disabled', []);
+					app.$set(app.$data.currentQuestion, 'final', final);
 	
 					//Unhide pane
 					document.getElementById('questionDisplay').classList.remove('hidden');
@@ -113,6 +124,25 @@ window.addEventListener('load', () => {
 					setTimeout(() => {
 						app.$set(category.questions, index, undefined);
 					}, 2000);
+				//Open Final Jeopardy question
+				} else if(app.$data.clickPermit && final) {
+					//Don't allow double clicking
+					app.$set(app.$data, 'clickPermit', false);
+
+					//Put data into current question
+					app.$set(app.$data.currentQuestion, 'data', question);
+					app.$set(app.$data.currentQuestion, 'score', 0);
+					app.$set(app.$data.currentQuestion, 'disabled', []);
+					app.$set(app.$data.currentQuestion, 'final', final);
+	
+					//Unhide pane
+					document.getElementById('questionDisplay').classList.remove('hidden');
+
+					//Play Think!
+					setTimeout(() => {
+						if(final)
+							document.getElementById('audio--think').play();
+					}, 2000 + 1000); //Give 1 second after animation completes
 				}
 			},
 			'closeQuestion': () => {
@@ -149,38 +179,62 @@ window.addEventListener('load', () => {
 				}, 2000);
 			},
 			'answerQuestion': (player, state) => {
-				//Good answer
-				if(state === true) {
-					let disabled = app.$data.currentQuestion.disabled;
+				let disabled = app.$data.currentQuestion.disabled;
 
-					//Disable all players
-					for(let playerIter of app.$data.players) {
-						if(disabled.indexOf(playerIter) === -1)
-							app.$set(disabled, disabled.length, playerIter);
-					}
+				//Process an answer for not Final Jeopardy
+				if(!app.$data.currentQuestion.final) {
+					//Good answer
+					if(state === true) {
+						//Disable all players
+						for(let playerIter of app.$data.players) {
+							if(disabled.indexOf(playerIter) === -1)
+								app.$set(disabled, disabled.length, playerIter);
+						}
 
-					//Give score
-					app.addScore(player);
+						//Set current player to next turn leader
+						app.$set(app.$data, 'playerupname', player.name);
 
-					//Wait before closing question
-					setTimeout(() => {
-						app.closeQuestion();
-					}, 1500);
-				} else {
-					let disabled = app.$data.currentQuestion.disabled;
+						//Give score
+						app.addScore(player);
 
-					//Take score
-					app.removeScore(player);
-
-					//Disable current player
-					app.$set(disabled, disabled.length, player);
-
-					//Play wrong answer and close if all players answered incorrectly
-					if(disabled.length === app.$data.players.length) {
-						document.getElementById('audio--time-up').play();
+						//Wait before closing question
 						setTimeout(() => {
 							app.closeQuestion();
 						}, 1500);
+					} else {
+						let disabled = app.$data.currentQuestion.disabled;
+
+						//Take score
+						app.removeScore(player);
+
+						//Disable current player
+						app.$set(disabled, disabled.length, player);
+
+						//Play wrong answer and close if all players answered incorrectly
+						if(disabled.length === app.$data.players.length) {
+							document.getElementById('audio--time-up').play();
+							setTimeout(() => {
+								app.closeQuestion();
+							}, 1500);
+						}
+					}
+				//Process answer for Final Jeopardy
+				} else {
+					//Disable current player
+					app.$set(disabled, disabled.length, player);
+
+					//Add/remove score based on answer
+					app.$set(app.$data.currentQuestion, 'score', player.wager);
+					if(state === true)
+						app.addScore(player);
+					else
+						app.removeScore(player);
+					
+					//Move on to ending if all players have answered
+					if(disabled.length === app.$data.players.length) {
+						setTimeout(() => {
+							app.gameProgress('transition');
+						}, 2000);
 					}
 				}
 			},
@@ -193,7 +247,8 @@ window.addEventListener('load', () => {
 			/* ### REMOVE ### */
 			'finishJeopardy': () => {
 				console.group('clense');
-				for(let category of app.$data.data.boards.jeopardy.categories) {
+				let board = (app.$data.gamestate == "jeopardy") ? app.$data.data.boards.jeopardy : app.$data.data.boards.doublejeopardy;
+				for(let category of board.categories) {
 					console.log(`Clensing category ${category.name}...`);
 					console.groupCollapsed(category.name);
 					for(let questionIndex in category.questions) {
@@ -203,17 +258,27 @@ window.addEventListener('load', () => {
 					console.groupEnd();
 				}
 				console.groupEnd();
-				app.$set(app.$data.data.boards.jeopardy.categories[0].questions, 0, "Foo?");
-				app.openQuestion(app.$data.data.boards.jeopardy.categories[0], 0, 0);
+				app.$set(board.categories[0].questions, 0, "Foo?");
+				app.openQuestion(board.categories[0], 0, 0);
 				setTimeout(() => {
-					app.answerQuestion(app.$data.players[0], true);
+					//app.answerQuestion(app.$data.players[0], true);
+					app.closeQuestion();
 				}, 2000);
 			}
 		}
 	});
 
-	/* ### REMOVE ### */
 	//Load file data
+	ipcRenderer.invoke('file', {
+		action: 'load'
+	}).then((data) => {
+		if(data !== undefined)
+			app.$set(app.$data, 'data', data);
+		document.getElementById('audio--theme').volume = 0.25;
+		document.getElementById('audio--theme').play();
+	});
+	/* ### REMOVE ### */
+	/*
 	if(!autoLoadData) {
 		ipcRenderer.invoke('file', {
 			action: 'load'
@@ -228,16 +293,21 @@ window.addEventListener('load', () => {
 		let data = require('../../games/childrens_church_review.json');
 		app.$set(app.$data, 'data', data);
 	}
+	*/
 
 	/* ### REMOVE ### */
 	//Load demo players
+	/*
 	for(let player of demoPlayers) {
 		app.$refs.playerEntry.value = player;
 		app.addPlayer();
 	}
+	*/
 	/* ### REMOVE ### */
+	/*
 	if(demoPlayers)
 		app.gameProgress('start')
+	*/
 });
 
 //Listen for key presses

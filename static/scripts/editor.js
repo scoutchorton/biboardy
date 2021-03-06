@@ -27,7 +27,7 @@ window.addEventListener('load', () => {
 						}
 					]
 				},
-				'doublejepodary': {
+				'doublejeopardy': {
 					categories: [
 						{
 							name: "Category 1",
@@ -47,7 +47,7 @@ window.addEventListener('load', () => {
 						}
 					]
 				},
-				'finaljepodary': {
+				'finaljeopardy': {
 					question: 'Final Jeopardy Question'
 				},
 			};
@@ -88,9 +88,9 @@ window.addEventListener('load', () => {
 		//Show correct board
 		if(mode === 'jeopardy')
 			document.getElementById('editor--jeopardy').classList.remove('hidden');
-		else if(mode === 'doublejepodary')
+		else if(mode === 'doublejeopardy')
 			document.getElementById('editor--double-jeopardy').classList.remove('hidden');
-		else if(mode === 'finaljepodary')
+		else if(mode === 'finaljeopardy')
 			document.getElementById('editor--final-jeopardy').classList.remove('hidden');
 	});
 
@@ -161,8 +161,8 @@ window.addEventListener('load', () => {
 				priceInc: document.getElementById('settings--start-price').querySelector('input[type=number]').value,
 				boards: {
 					jeopardy: editor.$data.jeopardy,
-					doublejepodary: editor.$data.doublejepodary,
-					finaljepodary: editor.$data.finaljepodary
+					doublejeopardy: editor.$data.doublejeopardy,
+					finaljeopardy: editor.$data.finaljeopardy
 				}
 			}
 		});
@@ -180,8 +180,8 @@ window.addEventListener('load', () => {
 
 				//Load board data
 				editor.$data.jeopardy = data.boards.jeopardy;
-				editor.$data.doublejepodary = data.boards.doublejepodary;
-				editor.$data.finaljepodary = data.boards.finaljepodary;
+				editor.$data.doublejeopardy = data.boards.doublejeopardy;
+				editor.$data.finaljeopardy = data.boards.finaljeopardy;
 			}
 		});
 	});

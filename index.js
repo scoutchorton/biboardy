@@ -3,6 +3,7 @@
  */
 const { app, BrowserWindow, dialog, ipcMain, Menu } = require("electron");
 const fs = require('fs').promises;
+//const path = require('path');
 
 /**
  * Electron loading
@@ -17,7 +18,8 @@ function createMain() {
 		center: true,
 		webPreferences: {
 			nodeIntegration: true
-		}
+		},
+		icon: 'static/assets/logo_1024x1024.png'
 	});
 
 	//Open files to process

@@ -15,8 +15,8 @@
 			<span class="spacer"></span>
 			<span class="select" id="menu--mode">
 				<span value="jeopardy" selected>Jeopardy</span>
-				<span value="doublejepodary">Double Jeopardy</span>
-				<span value="finaljepodary">Final Jeopardy</span>
+				<span value="doublejeopardy">Double Jeopardy</span>
+				<span value="finaljeopardy">Final Jeopardy</span>
 			</span>
 			<span class="spacer"></span>
 		</div>
@@ -28,13 +28,13 @@
 				</div>
 			</div>
 			<div class="jeopardy hidden" id="editor--double-jeopardy">
-				<div v-for="category in doublejepodary.categories" v-bind:index="doublejepodary.categories.indexOf(category)">
+				<div v-for="category in doublejeopardy.categories" v-bind:index="doublejeopardy.categories.indexOf(category)">
 					<div class="category">{{ category.name }}</div>
 					<div class="question" v-for="question in category.questions">{{ question }}</div>
 				</div>
 			</div>
 			<div class="final hidden" id="editor--final-jeopardy">
-				<div class="final question">{{ finaljepodary.question }}</div>
+				<div class="final question">{{ finaljeopardy.question }}</div>
 			</div>
 		</div>
 		<div class="menu" id="settings">
