@@ -77,7 +77,7 @@ window.addEventListener('load', () => {
 						/* ### REMOVE ### */
 						/*
 						setTimeout(() => {
-							app.finishJeopardy();
+							//app.finishJeopardy();
 						}, 2000);
 						*/
 					}, 1000);
